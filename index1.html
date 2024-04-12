@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tax Calculator</title>
+<style>
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #007bff;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="number"],
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="number"]:focus,
+select:focus {
+  border-color: #007bff;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Error styles */
+.error-icon {
+  display: none;
+  float: right;
+  margin-top: -30px;
+  color: #ff0000;
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 5px;
+  max-width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Tax Calculator</h1>
+  <form id="taxForm">
+    <div class="form-group">
+      <label for="grossIncome">Gross Annual Income:</label>
+      <input type="number" id="grossIncome" name="grossIncome" required>
+      <span class="error-icon">&#9888;</span>
+    </div>
+    <div class="form-group">
+      <label for="extraIncome">Extra Income:</label>
+      <input type="number" id="extraIncome" name="extraIncome" required>
+      <span class="error-icon">&#9888;</span>
+    </div>
+    <div class="form-group">
+      <label for="deductions">Deductions:</label>
+      <input type="number" id="deductions" name="deductions" required>
+      <span class="error-icon">&#9888;</span>
+    </div>
+    <div class="form-group">
+      <label for="age">Age:</label>
+      <select id="age" name="age" required>
+        <option value="<40">&lt;40</option>
+        <option value=">=40&<60">&ge; 40 &lt; 60</option>
+        <option value=">=60">&ge; 60</option>
+      </select>
+      <span class="error-icon">&#9888;</span>
+    </div>
+    <button type="submit">Calculate Tax</button>
+  </form>
+</div>
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p id="taxResult"></p>
+  </div>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+document.getElementById("taxForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+  calculateTax();
+  modal.style.display = "block";
+});
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+function calculateTax() {
+  var grossIncome = parseFloat(document.getElementById("grossIncome").value);
+  var extraIncome = parseFloat(document.getElementById("extraIncome").value);
+  var deductions = parseFloat(document.getElementById("deductions").value);
+  var age = document.getElementById("age").value;
+  var tax = 0;
+
+  var taxableIncome = grossIncome + extraIncome - deductions - 8;
+
+  if (taxableIncome > 0) {
+    if (age === "<40") {
+      tax = 0.3 * taxableIncome;
+    } else if (age === ">=40&<60") {
+      tax = 0.4 * taxableIncome;
+    } else if (age === ">=60") {
+      tax = 0.1 * taxableIncome;
+    }
+  }
+
+  var overallIncome = grossIncome + extraIncome - tax;
+
+  document.getElementById("taxResult").innerText = "Overall Income after Tax Deductions: " + overallIncome.toFixed(2) + " Lakhs";
+}
+</script>
+
+</body>
+</html>
